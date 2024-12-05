@@ -133,7 +133,23 @@
 
       // Envio dos dados
       alert("Formulário validado e pronto para envio.");
-      form.submit();
+      fetch("https://script.google.com/macros/s/AKfycby1AuVMFWeaLbX9KMU5YqHl2p7lCKP536MSOBnxU7aGMb8CBfxuuPw8BIGrDd7bnKHbRg/exec", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    nomeGuerra: document.getElementById("nomeGuerra").value,
+    postoGraduacao: document.getElementById("postoGraduacao").value,
+    matriculaSiape: document.getElementById("matriculaSiape").value,
+    funcao: document.getElementById("funcao").value,
+    lotacao: document.getElementById("lotacao").value,
+    alaServico: document.getElementById("alaServico").value,
+    dataAbono1: document.getElementById("dataAbono1").value,
+    dataAbono2: document.getElementById("dataAbono2").value,
+    dataAbono3: document.getElementById("dataAbono3").value,
+    dataAbono2_1: document.getElementById("dataAbono2_1").value,
+    dataAbono2_2: document.getElementById("dataAbono2_2").value,
+    dataAbono2_3: document.getElementById("dataAbono2_3
+
     }
   </script>
 </body>

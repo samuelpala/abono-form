@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escolha de Férias</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Escolha suas férias</h1>
+  <form id="feriasForm">
+    <label for="date1">Escolha a 1ª data:</label>
+    <input type="date" id="date1" required><br>
+
+    <label for="date2">Escolha a 2ª data:</label>
+    <input type="date" id="date2" required><br>
+
+    <label for="date3">Escolha a 3ª data:</label>
+    <input type="date" id="date3" required><br>
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script>
+    const date1 = document.getElementById("date1");
+    const date2 = document.getElementById("date2");
+    const date3 = document.getElementById("date3");
+
+    function getMonthFromDate(input) {
+      return new Date(input.value).getMonth(); // Retorna o índice do mês (0 = janeiro)
+    }
+
+    function validateDates() {
+      const selectedMonths = new Set();
+      const inputs = [date1, date2, date3];
+
+      for (const input of inputs) {
+        if (input.value) {
+          const month = getMonthFromDate(input);
+          if (selectedMonths.has(month)) {
+            alert("As datas devem ser em meses diferentes!");
+            input.value = ""; // Reseta o campo inválido
+            return false;
+          }
+          selectedMonths.add(month);
+        }
+      }
+      return true;
+    }
+
+    document.getElementById("feriasForm").addEventListener("submit", (event) => {
+      if (!validateDates()) {
+        event.preventDefault(); // Impede o envio se a validação falhar
+      }
+    });
+  </script>
+</body>
+</html>

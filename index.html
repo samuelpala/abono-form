@@ -3,67 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Escolha de Férias</title>
+  <title>Formulário com Validação</title>
   <style>
+    iframe {
+      width: 100%;
+      height: 800px;
+      border: none;
+    }
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-    }
-    input {
-      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>Escolha suas férias</h1>
-  <form id="feriasForm">
-    <label for="date1">Escolha a 1ª data:</label>
-    <input type="date" id="date1" required><br>
-
-    <label for="date2">Escolha a 2ª data:</label>
-    <input type="date" id="date2" required><br>
-
-    <label for="date3">Escolha a 3ª data:</label>
-    <input type="date" id="date3" required><br>
-
-    <button type="submit">Enviar</button>
-  </form>
+  <h1>Formulário com Validação de Datas</h1>
+  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdZF8_DzlcmTorAMsRPCoMtdCk26IvRm02tVvE592a23fZpmw/viewform?embedded=true" width="640" height="2060" frameborder="0" marginheight="0" marginwidth="0">Carregando…</iframe> <!-- Substitua com o link do Google Form -->
 
   <script>
-    const date1 = document.getElementById("date1");
-    const date2 = document.getElementById("date2");
-    const date3 = document.getElementById("date3");
+    const googleForm = document.getElementById("googleForm");
 
-    function getMonthFromDate(input) {
-      return new Date(input.value).getMonth(); // Retorna o índice do mês (0 = janeiro)
-    }
+    googleForm.addEventListener("load", () => {
+      // Aguarde um momento para o formulário carregar completamente
+      setTimeout(() => {
+        // Tenta acessar o conteúdo do iframe (funciona somente em formulários públicos do Google)
+        const formDoc = googleForm.contentDocument || googleForm.contentWindow.document;
 
-    function validateDates() {
-      const selectedMonths = new Set();
-      const inputs = [date1, date2, date3];
-
-      for (const input of inputs) {
-        if (input.value) {
-          const month = getMonthFromDate(input);
-          if (selectedMonths.has(month)) {
-            alert("As datas devem ser em meses diferentes!");
-            input.value = ""; // Reseta o campo inválido
-            return false;
+        if (formDoc) {
+          const dateInputs = formDoc.querySelectorAll("input[type='date']");
+          if (dateInputs.length < 3) {
+            console.log("Não foi possível localizar os campos de data.");
+            return;
           }
-          selectedMonths.add(month);
-        }
-      }
-      return true;
-    }
 
-    document.getElementById("feriasForm").addEventListener("submit", (event) => {
-      if (!validateDates()) {
-        event.preventDefault(); // Impede o envio se a validação falhar
-      }
+          // Adiciona validação em tempo real para os campos de data
+          dateInputs.forEach((input, index) => {
+            input.addEventListener("change", () => {
+              const dates = Array.from(dateInputs).map(el => el.value);
+              const months = dates
+                .filter(date => date) // Ignora campos vazios
+                .map(date => new Date(date).getMonth());
+              const uniqueMonths = new Set(months);
+
+              if (months.length !== uniqueMonths.size) {
+                alert(`As datas escolhidas não podem ser do mesmo mês!`);
+                input.value = ""; // Limpa o campo atual
+              }
+            });
+          });
+        } else {
+          console.error("Não foi possível acessar o conteúdo do iframe.");
+        }
+      }, 2000);
     });
   </script>
 </body>

@@ -3,58 +3,138 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulário com Validação</title>
+  <title>Formulário de Abono</title>
   <style>
-    iframe {
-      width: 100%;
-      height: 800px;
-      border: none;
-    }
     body {
       font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    form {
+      max-width: 600px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-  <h1>Formulário com Validação de Datas</h1>
-  <iframe id="googleForm" src="https://docs.google.com/forms/d/e/1FAIpQLSdZF8_DzlcmTorAMsRPCoMtdCk26IvRm02tVvE592a23fZpmw/viewform?embedded=true" width="640" height="2060" frameborder="0" marginheight="0" marginwidth="0">Carregando…</iframe> <!-- Substitua com o link do Google Form -->
+  <h1>Formulário de Abono</h1>
+  <form id="abonoForm">
+    <label for="nomeGuerra">Nome de Guerra:</label>
+    <input type="text" id="nomeGuerra" name="nomeGuerra" required>
+
+    <label for="postoGraduacao">Posto / Graduação:</label>
+    <select id="postoGraduacao" name="postoGraduacao" required>
+      <option value="">Selecione</option>
+      <option value="Cel">Cel</option>
+      <option value="Ten-Cel">Ten-Cel</option>
+      <option value="Maj">Maj</option>
+      <option value="Cap">Cap</option>
+      <option value="1º Ten">1º Ten</option>
+      <option value="2º Ten">2º Ten</option>
+      <option value="Asp">Asp</option>
+      <option value="SubTen">SubTen</option>
+      <option value="1º Sgt">1º Sgt</option>
+      <option value="2º Sgt">2º Sgt</option>
+      <option value="3º Sgt">3º Sgt</option>
+      <option value="Cb">Cb</option>
+      <option value="Sd">Sd</option>
+    </select>
+
+    <label for="matriculaSiape">Matrícula SIAPE:</label>
+    <input type="number" id="matriculaSiape" name="matriculaSiape" required>
+
+    <label for="funcao">Função:</label>
+    <select id="funcao" name="funcao" required>
+      <option value="">Selecione</option>
+      <option value="TRIPULANTE OPERACIONAL">TRIPULANTE OPERACIONAL</option>
+      <option value="PILOTO">PILOTO</option>
+      <option value="MECÂNICO">MECÂNICO</option>
+      <option value="APOIO SOLO">APOIO SOLO</option>
+      <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
+    </select>
+
+    <label for="lotacao">Lotação:</label>
+    <select id="lotacao" name="lotacao" required>
+      <option value="">Selecione</option>
+      <option value="COMAV">COMAV</option>
+      <option value="1º ESAV">1º ESAV</option>
+      <option value="2º ESAV">2º ESAV</option>
+    </select>
+
+    <label for="alaServico">Ala de Serviço:</label>
+    <select id="alaServico" name="alaServico" required>
+      <option value="">Selecione</option>
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="C">C</option>
+      <option value="D">D</option>
+      <option value="EXPEDIENTE">EXPEDIENTE</option>
+    </select>
+
+    <label for="dataAbono">Data Abono (3 datas em meses distintos):</label>
+    <input type="date" id="dataAbono1" name="dataAbono1" required>
+    <input type="date" id="dataAbono2" name="dataAbono2" required>
+    <input type="date" id="dataAbono3" name="dataAbono3" required>
+
+    <label for="dataAbono2">Data Abono 2 (com limite de dias):</label>
+    <input type="date" id="dataAbono2_1" name="dataAbono2_1">
+    <input type="date" id="dataAbono2_2" name="dataAbono2_2">
+    <input type="date" id="dataAbono2_3" name="dataAbono2_3">
+
+    <button type="button" onclick="validateAndSubmit()">Enviar</button>
+  </form>
 
   <script>
-    const googleForm = document.getElementById("googleForm");
+    function validateAndSubmit() {
+      const form = document.getElementById("abonoForm");
 
-    googleForm.addEventListener("load", () => {
-      // Aguarde um momento para o formulário carregar completamente
-      setTimeout(() => {
-        // Tenta acessar o conteúdo do iframe (funciona somente em formulários públicos do Google)
-        const formDoc = googleForm.contentDocument || googleForm.contentWindow.document;
+      // Datas de Abono
+      const abonoDates = [
+        document.getElementById("dataAbono1").value,
+        document.getElementById("dataAbono2").value,
+        document.getElementById("dataAbono3").value,
+      ];
 
-        if (formDoc) {
-          const dateInputs = formDoc.querySelectorAll("input[type='date']");
-          if (dateInputs.length < 3) {
-            console.log("Não foi possível localizar os campos de data.");
-            return;
-          }
+      // Validação: Datas de meses distintos
+      const months = abonoDates.map(date => new Date(date).getMonth());
+      if (new Set(months).size !== months.length) {
+        alert("As datas de abono devem ser em meses distintos!");
+        return;
+      }
 
-          // Adiciona validação em tempo real para os campos de data
-          dateInputs.forEach((input, index) => {
-            input.addEventListener("change", () => {
-              const dates = Array.from(dateInputs).map(el => el.value);
-              const months = dates
-                .filter(date => date) // Ignora campos vazios
-                .map(date => new Date(date).getMonth());
-              const uniqueMonths = new Set(months);
+      // Data Abono 2: Limitação de dias
+      const abonoStart = new Date(abonoDates[0]);
+      const abonoEnd = new Date(abonoDates[2]);
+      const abonoInterval = (abonoEnd - abonoStart) / (1000 * 60 * 60 * 24);
+      if (abonoInterval < 5) {
+        const maxDays = 5 - abonoInterval;
+        alert(`Data Abono 2 deve ser limitada a no máximo ${maxDays} dias.`);
+        return;
+      }
 
-              if (months.length !== uniqueMonths.size) {
-                alert(`As datas escolhidas não podem ser do mesmo mês!`);
-                input.value = ""; // Limpa o campo atual
-              }
-            });
-          });
-        } else {
-          console.error("Não foi possível acessar o conteúdo do iframe.");
-        }
-      }, 2000);
-    });
+      // Envio dos dados
+      alert("Formulário validado e pronto para envio.");
+      form.submit();
+    }
   </script>
 </body>
 </html>
